@@ -1,0 +1,7 @@
+//    <% if current_user.liked_event?(@event) %> 
+//		  $("#likebutton input[type=submit]").val("unlike");
+//		<% else %>
+//		  $("#likebutton input[type=submit]").val("like");
+//		<% end %>
+$('#likebutton').html("<%= j render(:partial => 'like', :locals => { :event => @event }) %>");
+console.log("hi")

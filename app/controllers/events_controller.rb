@@ -1,7 +1,7 @@
 class EventsController < ApplicationController
   before_action :authenticate_user!
 
-	before_action :set_event, :only => [ :show, :edit, :update, :destroy]
+	before_action :set_event, :only => [ :show, :edit, :update, :destroy, :like]
 
 	def index
 	  @events = Event.page(params[:page]).per(5)
@@ -48,6 +48,10 @@ class EventsController < ApplicationController
 	end
 
 	def update
+    if params[:remove_upload_file]=='1'
+       @event.logo=nil
+    end
+
   	if @event.update(event_params)
   		flash[:notice] = "event was successfully updated"
     	redirect_to event_path(@event)
@@ -59,14 +63,34 @@ class EventsController < ApplicationController
 	def destroy
   	@event.destroy
 
-		flash[:alert] = "event was successfully deleted"
-		redirect_to events_path
-	end
+  	respond_to do |format|
+       format.html{
+       flash[:alert] = "event was successfully deleted"
+		   redirect_to events_path	
+       }
+       format.js
+  	end
+  end
+
+  def like
+  	if current_user.liked_event?(@event)
+       current_user.likeevents.delete(@event)
+    else
+    	current_user.likeevents << @event
+    end
+
+  	respond_to do |format|
+  			format.html {redirect_to event_path(@event)}
+  			format.js
+  	end
+    end	
+
+
 
 	private
 
 	def event_params
-  	params.require(:event).permit(:name, :description, :category_id, :group_ids => [])
+  	params.require(:event).permit(:name, :description, :category_id, :logo,:group_ids => [])
 	end
 
 	def set_event

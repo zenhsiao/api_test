@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160902084022) do
+ActiveRecord::Schema.define(version: 20160914035602) do
 
   create_table "attendees", force: :cascade do |t|
     t.string   "name"
@@ -40,10 +40,14 @@ ActiveRecord::Schema.define(version: 20160902084022) do
     t.text     "description"
     t.boolean  "is_public"
     t.integer  "capacity"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
     t.string   "status"
     t.integer  "category_id"
+    t.string   "logo_file_name"
+    t.string   "logo_content_type"
+    t.integer  "logo_file_size"
+    t.datetime "logo_updated_at"
     t.index ["category_id"], name: "index_events_on_category_id"
   end
 
@@ -53,11 +57,29 @@ ActiveRecord::Schema.define(version: 20160902084022) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "likeships", force: :cascade do |t|
+    t.integer  "event_id"
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_likeships_on_event_id"
+    t.index ["user_id"], name: "index_likeships_on_user_id"
+  end
+
   create_table "locations", force: :cascade do |t|
     t.string   "name"
     t.integer  "event_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "missingstuffs", force: :cascade do |t|
+    t.date     "date"
+    t.string   "place"
+    t.text     "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string   "item_no"
   end
 
   create_table "people", force: :cascade do |t|
@@ -81,7 +103,12 @@ ActiveRecord::Schema.define(version: 20160902084022) do
     t.string   "last_sign_in_ip"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
+    t.string   "fb_uid"
+    t.string   "fb_token"
+    t.string   "authentication_token"
+    t.index ["authentication_token"], name: "index_users_on_authentication_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["fb_uid"], name: "index_users_on_fb_uid"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 

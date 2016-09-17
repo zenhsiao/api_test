@@ -1,3 +1,38 @@
 <p>Hola! It's <%= Time.now %></p>
 <p><%= link_to 'Hello!', welcome_say_hello_path %></p>
 <p><%= link_to 'Event list', events_path %></p>
+<p><%= link_to 'Ajax_test', welcome_ajaxtest_path, :id => "ajaxhtml" %></p>
+
+<p><%= link_to 'Ajax_test_json', welcome_ajaxtest_path, :id => "ajax_json" %></p>
+<p><%= link_to 'Ajax_test_js', welcome_ajaxtest_path,:remote=>true%></p>
+
+<div id="content">
+timeis
+ </div>
+ 
+ 
+
+<script>
+ $("#ajaxhtml").click(function(e){
+     e.preventDefault();
+     var url = $(this).attr("href");
+     $.ajax(url, {
+       success: function(response) {
+         $("#content").html(response)
+       }
+     })
+   })
+
+  $("#ajax_json").click(function(e){
+     e.preventDefault();
+     var url = $(this).attr("href");
+     $.ajax(url, {
+     	 dataType: "json",
+       success: function(response) {
+       	 var html="<div>"+response.title+"</div>";
+         $("#content").html(html);
+       }
+     })
+   })
+
+ </script>
